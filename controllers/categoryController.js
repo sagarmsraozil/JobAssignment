@@ -1,5 +1,6 @@
 //models
 const CompanyCategory = require('../models/companyCategoryModel');
+const Company = require('../models/companyModel');
 
 
 //API: To add a new category.
@@ -39,7 +40,7 @@ module.exports.addCategory = async(req,res)=>{
 //API: To fecth 10 company categories.
 module.exports.fetchCategory = async(req,res)=>{
     try{
-        let categories = await CompanyCategory.find({}).sort({'title':1}).limit(10);
+        let categories = await CompanyCategory.find({}).sort({'title':1});
         if(categories.length > 0)
         {
             return res.status(200).json({'success':true,'message':`${categories.length} categories found!!`,'data':categories});   
@@ -133,6 +134,7 @@ module.exports.deleteCategory = async(req,res)=>{
         let category = await CompanyCategory.findOne({'_id':categoryId});
         if(category != null)
         {   
+             let deleteCompanies = await Company.deleteMany({"categoryId":category._id});
              let deleteCategory = await CompanyCategory.deleteOne({'_id':category._id});
              if(deleteCategory.deletedCount >= 1)
              {

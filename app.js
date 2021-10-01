@@ -24,6 +24,7 @@ const server = http.createServer(app);
 
 //routes
 const categoryRoute = require('./routes/categoryRoute');
+const companyRoute = require('./routes/companyRoute');
 
 //express work
 if(process.env.NODE_ENV.trim().toLowerCase() == "development") {
@@ -36,6 +37,7 @@ app.use('/images',express.static(path.join(__dirname,'/images')));
 
 //app and routes
 app.use('/api/category',categoryRoute);
+app.use('/api/company',companyRoute);
 
 let port = 90 || process.env.PORT
 server.listen(port,()=>{

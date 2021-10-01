@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-//local modules
+//controller
 const {addCategory,fetchCategory,fecthSingleCategory,updateCategory,deleteCategory} = require('../controllers/categoryController');
 
 //Route: To add a new category.
