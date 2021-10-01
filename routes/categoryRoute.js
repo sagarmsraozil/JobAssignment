@@ -5,16 +5,19 @@ const router = express.Router();
 //controller
 const {addCategory,fetchCategory,fecthSingleCategory,updateCategory,deleteCategory} = require('../controllers/categoryController');
 
+//middleware
+const key = require('../middleware/key');
+
 //Route: To add a new category.
-router.post('/',addCategory);
+router.post('/',key.verifyAPIKey,addCategory);
 //Route: To fetch 10 company categories.
-router.get('/',fetchCategory);
+router.get('/',key.verifyAPIKey,fetchCategory);
 //Route: To fetch single category.
-router.get('/:id',fecthSingleCategory);
+router.get('/:id',key.verifyAPIKey,fecthSingleCategory);
 //Route: To update category.
-router.put('/:id',updateCategory);
+router.put('/:id',key.verifyAPIKey,updateCategory);
 //Route: To delete category.
-router.delete('/:id',deleteCategory);
+router.delete('/:id',key.verifyAPIKey,deleteCategory);
 
 
 module.exports = router;
