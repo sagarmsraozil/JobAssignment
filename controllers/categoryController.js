@@ -7,7 +7,7 @@ const Company = require('../models/companyModel');
 module.exports.addCategory = async(req,res)=>{
     try{
         let title = req.body['title'].trim();
-        
+
         //filtering data to check whether the given title already exists or not.
         let categories = await CompanyCategory.find({});
         let categoryContainer = categories.map((val)=>{return val.title.toLowerCase().trim()});

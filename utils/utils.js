@@ -6,9 +6,9 @@ const getCustomizedError = (errorData)=>{
 
     for(var i of errors)
     {
-        if(!Object.keys(errorBox).includes(i.params))
+        if(!Object.keys(errorBox).includes(i.param))
         {
-            errorBox[i.params] = i.msg;
+            errorBox[i.param] = i.msg;
         }
     }
 

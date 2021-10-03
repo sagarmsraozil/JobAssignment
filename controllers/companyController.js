@@ -15,10 +15,9 @@ module.exports.addCompany = async(req,res)=>{
         {
             let title = req.body['title'].trim();
             let status = req.body['status'];
-            let description = req.body['description'] != undefined? req.body['description'].trim() : req.body['description'];
+            let description = req.body['description'] == "undefined"? undefined: req.body['description'] == undefined? req.body['description']: req.body['description'].trim();
             let image = req.file != undefined ? req.file.path : "no-img.jpg";
-            let categoryId = req.body['categoryId'] != undefined ? req.body['categoryId'] : req.body['categoryId'] ;
-
+            let categoryId = req.body['categoryId'] == "undefined" ? undefined : req.body['categoryId'] == undefined ? req.body['categoryId']: req.body['categoryId'];
             let companyObj = await new Company({
                 "title":title,
                 'status':status,
@@ -51,7 +50,10 @@ module.exports.addCompany = async(req,res)=>{
 //API: To fetch companies
 module.exports.fetchCompanies = async(req,res)=>{
     try{
-        let companies = await Company.find({}).sort({'title':1});
+        let companies = await Company.find({}).sort({'title':1})
+        .populate({
+            "path":"categoryId"
+        })
         if(companies.length > 0)
         {
             return res.status(200).json({"success":true,'message':`${companies.length} Companies Found.`,'data':companies});
@@ -71,7 +73,10 @@ module.exports.fetchCompanies = async(req,res)=>{
 module.exports.fetchSingleCompany = async(req,res)=>{
     try{
         let companyId = req.params.id;
-        let company = await Company.findOne({'_id':companyId});
+        let company = await Company.findOne({'_id':companyId})
+        .populate({
+            "path":"categoryId"
+        })
 
         if(company != null)
         {
@@ -98,10 +103,19 @@ module.exports.updateCompany = async(req,res)=>{
             let title = req.body['title'].trim();
             let status = req.body['status'];
             let image = req.file != undefined? req.file.path : "no-img.jpg";
-            let description = req.body['description'] != undefined? req.body['description'].trim() : req.body['description'];
-            let categoryId = req.body['categoryId'];
-
+            let description = req.body['description'] == "undefined"? undefined: req.body['description'] == undefined? req.body['description']: req.body['description'].trim();
+            let categoryId = req.body['categoryId'] == "undefined" ? undefined : req.body['categoryId'] == undefined ? req.body['categoryId']: req.body['categoryId'];
             let company = await Company.findOne({"_id":companyId});
+
+            let unsetData = {};
+            if(description == undefined)
+            {
+                unsetData['description'] = 1
+            }
+            if(categoryId == undefined){
+                unsetData['categoryId'] = 1
+            }
+
             if(company != null)
             {
                 let editCompany = await Company.updateOne({"_id":company._id},{
@@ -111,7 +125,8 @@ module.exports.updateCompany = async(req,res)=>{
                         "image":image,
                         "description":description,
                         "categoryId":categoryId
-                    }
+                    },
+                    $unset:unsetData
                 })
 
                 if(editCompany.modifiedCount >= 1)
@@ -132,6 +147,7 @@ module.exports.updateCompany = async(req,res)=>{
     }
     catch(err)
     {
+        console.log(err);
         return res.status(404).json({'success':false,'message':err});
     }
 }
